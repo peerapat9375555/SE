@@ -1,0 +1,14 @@
+{
+  "model": "efficientnet_b2",
+  "epoch": 24,
+  "f1_macro": 0.9951090232010096,
+  "metrics": {
+    "accuracy": 0.9956958393113343,
+    "f1_macro": 0.9951090232010096,
+    "f1_weighted": 0.9957039430170891,
+    "precision_macro": 0.9941245492882128,
+    "precision_weighted": 0.9957646560912534,
+    "recall_macro": 0.9961591543878217,
+    "recall_weighted": 0.9956958393113343
+  }
+}

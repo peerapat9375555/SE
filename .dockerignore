@@ -1,0 +1,17 @@
+.git
+__pycache__
+*.pyc
+venv/
+env/
+.venv/
+frontend/node_modules/
+frontend/dist/
+dataset/
+training_code/
+*.zip
+*.tar.gz
+.vscode/
+.idea/
+logs/
+runs/
+experiments/

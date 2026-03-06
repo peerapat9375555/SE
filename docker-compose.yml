@@ -1,0 +1,62 @@
+# ═══════════════════════════════════════════════════════════════
+#  DermaAI — Microservice Deployment
+#  3 Services: frontend, model-service, chatbot-service
+# ═══════════════════════════════════════════════════════════════
+#
+#  วิธีใช้:
+#    docker-compose build     # สร้าง image ทั้ง 3 ตัว
+#    docker-compose up        # เริ่มระบบ (เพิ่ม -d เพื่อ run background)
+#    docker-compose down      # หยุดระบบ
+#
+#  เข้าเว็บที่: http://localhost
+# ═══════════════════════════════════════════════════════════════
+
+services:
+
+  # ─── 1. Frontend (React + Nginx Reverse Proxy) ──────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - model-service
+      - chatbot-service
+    restart: unless-stopped
+    networks:
+      - dermaai-network
+
+  # ─── 2. Model Service (Flask + EfficientNet-B2) ─────────────
+  model-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+    networks:
+      - dermaai-network
+
+  # ─── 3. Chatbot Service (Flask + RAG) ───────────────────────
+  chatbot-service:
+    build:
+      context: ../RAG_skin
+      dockerfile: Dockerfile
+    expose:
+      - "5001"
+    environment:
+      - LLM_API_KEY=sk_8BB2YyFppfr1z8Sk4mEfgc4AWLDTsjR4nXn2gsiUhAMdMWY1Jv1Yquin9EhSgf46
+      - LLM_BASE_URL=https://gen.ai.kku.ac.th/api/v1
+      - LLM_MODEL=gemini-3.1-pro-preview
+      - SUPABASE_URL=https://rsocwhsekrnpwuejankb.supabase.co
+      - SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzb2N3aHNla3JucHd1ZWphbmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3Njk1MDUsImV4cCI6MjA4NzM0NTUwNX0.CPvVpSyXhxSHPhH2Hm_ZHsXdeoxb23pybVhYxhoUwE8
+    restart: unless-stopped
+    networks:
+      - dermaai-network
+
+networks:
+  dermaai-network:
+    driver: bridge
