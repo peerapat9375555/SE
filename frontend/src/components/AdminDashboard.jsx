@@ -4,21 +4,32 @@ import { supabase } from '../supabaseClient';
 export default function AdminDashboard({ session, onLogout }) {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const ITEMS_PER_PAGE = 20;
 
   useEffect(() => {
-    fetchDocuments();
-  }, []);
+    fetchDocuments(currentPage);
+  }, [currentPage]);
 
-  const fetchDocuments = async () => {
+  const fetchDocuments = async (page) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      const from = (page - 1) * ITEMS_PER_PAGE;
+      const to = from + ITEMS_PER_PAGE - 1;
+
+      const { data, error, count } = await supabase
         .from('skin_documents')
-        .select('id, content, metadata, source')
-        .order('id', { ascending: false });
+        .select('id, content, metadata, source', { count: 'exact' })
+        .order('id', { ascending: false })
+        .range(from, to);
 
       if (error) throw error;
       setDocuments(data || []);
+      if (count !== null) setTotalItems(count);
     } catch (error) {
       console.error('Error fetching documents:', error.message);
     } finally {
@@ -36,7 +47,8 @@ export default function AdminDashboard({ session, onLogout }) {
         .eq('id', id);
         
       if (error) throw error;
-      setDocuments(prev => prev.filter(doc => doc.id !== id));
+      // Refresh the current page to properly re-paginate
+      fetchDocuments(currentPage);
     } catch (error) {
       console.error('Error deleting document:', error.message);
       alert('Failed to delete document. Please try again.');
@@ -44,9 +56,10 @@ export default function AdminDashboard({ session, onLogout }) {
   };
 
   const goToEmbedPage = () => {
-    // Navigate to the standalone embedding web app
     window.location.href = 'https://dermaai-chatbot.onrender.com/embed';
   };
+
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] flex justify-center pb-20 animate-in fade-in duration-300">
@@ -88,14 +101,14 @@ export default function AdminDashboard({ session, onLogout }) {
         </button>
 
         {/* Dashboard Content */}
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-8">
           <div className="p-5 md:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
             <h2 className="font-bold text-slate-800 flex items-center gap-2">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#117b6f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               Knowledge Base Documents
             </h2>
             <span className="text-xs font-bold bg-[#117b6f]/10 text-[#117b6f] px-3 py-1 rounded-full">
-              {documents.length} Items
+              {totalItems} Items Total
             </span>
           </div>
           
@@ -151,6 +164,43 @@ export default function AdminDashboard({ session, onLogout }) {
             )}
           </div>
         </div>
+
+        {/* Pagination Controls */}
+        {!loading && totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mb-10">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-2 border border-slate-200 bg-white text-slate-600 font-medium text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+            >
+              Previous
+            </button>
+            
+            <div className="flex bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-4 py-2 font-medium text-sm border-r border-slate-200 last:border-r-0 transition-colors ${
+                    currentPage === i + 1 
+                      ? 'bg-[#117b6f] text-white' 
+                      : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2 border border-slate-200 bg-white text-slate-600 font-medium text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        )}
 
       </div>
     </div>
