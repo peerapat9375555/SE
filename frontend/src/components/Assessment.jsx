@@ -139,7 +139,7 @@ export default function Assessment({ session, onBack }) {
         {/* Left Side: Logo */}
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => window.history.back()}
+            onClick={() => onBack()}
             className="w-10 h-10 rounded-xl border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all shadow-sm"
             title="Back to Dashboard"
           >
