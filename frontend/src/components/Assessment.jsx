@@ -147,7 +147,7 @@ export default function Assessment({ session, onBack }) {
         </div>
         <button 
           onClick={() => setShowClinics(true)}
-          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-teal-50 text-teal-700 rounded-xl font-bold text-sm hover:bg-teal-100 transition-colors border border-teal-500"
+          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-[#f0fdfa] text-[#117b6f] rounded-xl font-bold text-sm hover:bg-teal-100 transition-colors border-2 border-[#16c6a4]"
         >
           <span className="text-lg">🏥</span>
           <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
@@ -225,7 +225,7 @@ export default function Assessment({ session, onBack }) {
         `}>
           <div className="p-4 md:p-6 border-b bg-white flex items-center justify-between sticky top-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-teal-50 border-2 border-teal-500 rounded-xl flex items-center justify-center text-xl">🤖</div>
+              <div className="w-10 h-10 bg-[#f0fdfa] border-2 border-[#16c6a4] rounded-xl flex items-center justify-center text-xl">🤖</div>
               <div>
                 <h3 className="font-black text-slate-800 text-sm">Dr. AI Assistant</h3>
                 <div className="flex items-center gap-1.5">
