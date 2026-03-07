@@ -239,7 +239,7 @@ export default function Assessment({ session, onBack }) {
             </button>
           </div>
 
-          <div className="flex-1 min-h-0 p-4 md:p-6 overflow-y-auto space-y-4 md:space-y-6 bg-slate-50/30">
+          <div className="h-[calc(100vh-180px)] md:h-[calc(100vh-160px)] p-4 md:p-6 overflow-y-auto space-y-4 md:space-y-6 bg-slate-50/30">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium whitespace-pre-wrap'}`}>
@@ -262,7 +262,7 @@ export default function Assessment({ session, onBack }) {
             <div ref={chatEndRef} />
           </div>
 
-          <form onSubmit={handleSendMessage} className="p-4 md:p-6 border-t bg-white sticky bottom-0">
+          <form onSubmit={handleSendMessage} className="p-4 md:p-6 border-t bg-white absolute bottom-0 left-0 right-0">
             <div className="relative flex items-center">
               <input 
                 type="text" 
