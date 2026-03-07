@@ -132,7 +132,7 @@ export default function Assessment({ session, onBack }) {
   return (
     <div className="min-h-screen bg-[#fbfaf6] flex flex-col font-sans text-slate-900 relative overflow-hidden">
       
-      <header className="h-[80px] flex-none px-4 md:px-8 bg-[#0c4a41] flex items-center justify-between z-20 shadow-md border-b-0 w-full relative">
+      <header className="h-[80px] flex-none pl-4 md:pl-8 pr-4 md:pr-0 bg-[#0c4a41] flex items-center justify-between z-20 shadow-md border-b-0 w-full relative">
         {/* Left Side: Logo */}
         <div className="flex items-center gap-4">
           <button 
@@ -150,10 +150,19 @@ export default function Assessment({ session, onBack }) {
         </div>
 
         {/* Right Side: Chatbot Profile & Clinic Button */}
-        <div className="flex items-center gap-4 md:gap-8 h-full">
+        <div className="flex items-center h-full">
 
-          {/* Chatbot Profile (Integrated into Header) */}
-          <div className="hidden md:flex items-center gap-3 pr-4 md:pr-8 border-r border-white/10 h-full py-2">
+          {/* Clinic Button (Moved to the left of Chatbot Profile separator) */}
+          <button 
+            onClick={() => setShowClinics(true)}
+            className="hidden md:flex items-center gap-2 px-4 py-2 mr-6 bg-[#e6ab5b] text-[#0c4a41] rounded-full font-bold text-sm hover:bg-[#d6994a] transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
+          </button>
+
+          {/* Chatbot Profile (Matching exactly with Chat Window width) */}
+          <div className="hidden md:flex items-center gap-3 w-[450px] pl-6 h-full border-l border-white/20 py-2">
             <div className="w-10 h-10 bg-transparent border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-xl shadow-[0_0_10px_rgba(22,198,164,0.3)] overflow-hidden">
                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
@@ -167,24 +176,23 @@ export default function Assessment({ session, onBack }) {
               </div>
             </div>
           </div>
-
-          {/* Clinic Button */}
-          <button 
-            onClick={() => setShowClinics(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#e6ab5b] text-[#0c4a41] rounded-full font-bold text-sm hover:bg-[#d6994a] transition-colors shadow-sm"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
-          </button>
           
-          {/* Mobile Close Chat Button (Visible only on mobile when chat is open) */}
-          <button onClick={() => setShowChat(false)} className={`md:hidden text-white p-2 font-bold text-sm ${showChat ? 'block' : 'hidden'}`}>
-            ✕
-          </button>
+          {/* Mobile Buttons */}
+          <div className="flex md:hidden items-center gap-2 h-full">
+            <button 
+              onClick={() => setShowClinics(true)}
+              className="flex items-center gap-1 px-3 py-1.5 bg-[#e6ab5b] text-[#0c4a41] rounded-full font-bold text-xs shadow-sm"
+            >
+              <span className="text-sm">🏥</span> คลินิก
+            </button>
+            <button onClick={() => setShowChat(!showChat)} className="text-white p-2 text-xl">
+              {showChat ? '✕' : '💬'}
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-73px)] overflow-hidden">
+      <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-80px)] overflow-hidden">
         
         {/* --- ส่วนซ้าย: ระบบวิเคราะห์รูปภาพ (ซ่อนเมื่อเปิดแชตในมือถือ) --- */}
         <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#fbfaf6] w-full h-full ${showChat ? 'hidden md:block' : 'block'}`}>
@@ -283,8 +291,8 @@ export default function Assessment({ session, onBack }) {
 
         {/* --- ส่วนขวา: ระบบแชตบอท (Overlay ในมือถือ) --- */}
         <aside className={`
-          fixed inset-0 z-40 bg-white flex flex-col shadow-2xl transition-transform duration-300 transform
-          md:relative md:translate-x-0 md:w-[450px] md:h-full md:z-10 md:border-l md:border-slate-200
+          fixed inset-0 z-40 bg-white flex flex-col transition-transform duration-300 transform
+          md:relative md:translate-x-0 md:w-[450px] md:h-full md:z-10 md:border-l-2 md:border-slate-200 md:shadow-[-5px_0_15px_-3px_rgba(0,0,0,0.05)]
           ${showChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
         `}>
           {/* Header แชตบอทในมือถือ (ใน Desktop จะไปรวมกับ Navbar หลักด้านบน) */}
