@@ -154,10 +154,10 @@ export default function Assessment({ session, onBack }) {
         </button>
       </header>
 
-      <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-73px)]">
+      <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-73px)] overflow-hidden">
         
         {/* --- ส่วนซ้าย: ระบบวิเคราะห์รูปภาพ (ซ่อนเมื่อเปิดแชตในมือถือ) --- */}
-        <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#f8fafc] w-full ${showChat ? 'hidden md:block' : 'block'}`}>
+        <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#f8fafc] w-full h-full ${showChat ? 'hidden md:block' : 'block'}`}>
           <div className="max-w-4xl mx-auto">
             {!showResult ? (
               <div className="space-y-6 animate-in fade-in duration-700">
@@ -220,7 +220,7 @@ export default function Assessment({ session, onBack }) {
         {/* --- ส่วนขวา: ระบบแชตบอท (Overlay ในมือถือ) --- */}
         <aside className={`
           fixed inset-0 z-40 bg-white flex flex-col shadow-2xl transition-transform duration-300 transform
-          md:relative md:translate-x-0 md:w-[400px] md:z-10 md:border-l md:border-slate-200
+          md:relative md:translate-x-0 md:w-[400px] md:h-full md:z-10 md:border-l md:border-slate-200
           ${showChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
         `}>
           <div className="p-4 md:p-6 border-b bg-white flex items-center justify-between sticky top-0">
