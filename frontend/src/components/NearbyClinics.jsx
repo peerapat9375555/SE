@@ -64,37 +64,54 @@ export default function NearbyClinics({ isOpen, onClose }) {
   const fetchClinicsFromOSM = async (lat, lon) => {
     setLoadingStep('fetching');
     
-    // ค้นหาในรัศมี 30km (30000 เมตร)
-    const radius = 30000;
+    // ลดระยะค้นหาลงเหลือ 15km (15000 เมตร) เพื่อลดภาระเซิร์ฟเวอร์
+    const radius = 15000;
     
-    // Overpass QL Query
+    // Overpass QL Query (ปรับให้เบาลง ตัด relation ออก)
     const query = `
       [out:json][timeout:25];
       (
         node["amenity"="hospital"](around:${radius},${lat},${lon});
         way["amenity"="hospital"](around:${radius},${lat},${lon});
-        relation["amenity"="hospital"](around:${radius},${lat},${lon});
         node["amenity"="clinic"](around:${radius},${lat},${lon});
         way["amenity"="clinic"](around:${radius},${lat},${lon});
-        relation["amenity"="clinic"](around:${radius},${lat},${lon});
         node["healthcare"="clinic"](around:${radius},${lat},${lon});
         way["healthcare"="clinic"](around:${radius},${lat},${lon});
-        relation["healthcare"="clinic"](around:${radius},${lat},${lon});
       );
       out center;
     `;
 
     try {
-      const response = await fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `data=${encodeURIComponent(query)}`
-      });
+      // เพิ่ม Fallback endpoint เผื่อ de ร่ม ให้ย้ายไป lz4
+      const endpoints = [
+        'https://overpass-api.de/api/interpreter',
+        'https://lz4.overpass-api.de/api/interpreter'
+      ];
+      
+      let response = null;
+      let usedEndpoint = '';
 
-      if (!response.ok) {
-        throw new Error('ไม่สามารถดึงข้อมูลจาก OpenStreetMap ได้');
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `data=${encodeURIComponent(query)}`
+          });
+          if (res.ok) {
+            response = res;
+            usedEndpoint = url;
+            break;
+          }
+        } catch (e) {
+          console.warn(`Failed to fetch from ${url}`, e);
+        }
+      }
+
+      if (!response || !response.ok) {
+        throw new Error('ไม่สามารถดึงข้อมูลจาก OpenStreetMap ได้ทุกช่องทาง');
       }
 
       const data = await response.json();
