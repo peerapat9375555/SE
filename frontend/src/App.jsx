@@ -4,6 +4,8 @@ import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Assessment from './components/Assessment';
 
+import AdminDashboard from './components/AdminDashboard';
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [currentView, setCurrentView] = useState('dashboard');
@@ -25,6 +27,15 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const handleLogout = async () => {
+    if (session?.user?.email === 'admin@system.local') {
+      setSession(null);
+      setCurrentView('dashboard');
+    } else {
+      await supabase.auth.signOut();
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-slate-50">
@@ -45,7 +56,12 @@ export default function App() {
     );
   }
 
-  // Routing Logic
+  // Admin Routing Logic
+  if (session.user.email === 'admin@system.local' || session.user.email === 'admin@admin.com') {
+    return <AdminDashboard session={session} onLogout={handleLogout} />;
+  }
+
+  // Normal User Routing Logic
   return (
     <>
       {currentView === 'dashboard' && (
