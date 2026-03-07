@@ -142,7 +142,7 @@ export default function Assessment({ session, onBack }) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
           <div className="flex items-center gap-3">
-            <h1 className="text-lg md:text-xl font-black text-slate-800 tracking-tight uppercase hidden sm:block">AI Skin Assistant</h1>
+            <h1 className="text-lg md:text-xl font-black text-[#0a2540] tracking-tight uppercase hidden sm:block">AI Skin Assistant</h1>
           </div>
         </div>
         <button 
@@ -191,17 +191,17 @@ export default function Assessment({ session, onBack }) {
                     <img src={imagePreview} className="w-full h-[300px] md:h-[450px] object-cover rounded-2xl shadow-inner" alt="ผลการตรวจ" />
                   </div>
                 </div>
-                <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-t-8 border-[#117b6f] flex flex-col">
+                <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-t-8 border-[#16c6a4] flex flex-col">
                   <div className="flex-1">
-                    <span className="bg-teal-100 text-[#117b6f] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">ผลการตรวจโดย AI</span>
-                    <h3 className="text-2xl md:text-4xl font-black text-slate-800 mt-4 mb-2">{result.label}</h3>
+                    <span className="bg-[#f0fdfa] text-[#117b6f] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">ผลการตรวจโดย AI</span>
+                    <h3 className="text-2xl md:text-4xl font-black text-[#0a2540] mt-4 mb-2">{result.label}</h3>
                     <div className="my-6 md:my-8">
                       <div className="flex justify-between items-end mb-2">
                         <span className="text-slate-400 text-xs font-bold uppercase">ความมั่นใจ</span>
-                        <span className="text-xl md:text-2xl font-black text-[#117b6f]">{result.confidence}%</span>
+                        <span className="text-xl md:text-2xl font-black text-[#16c6a4]">{result.confidence}%</span>
                       </div>
                       <div className="w-full bg-slate-100 h-3 md:h-4 rounded-full overflow-hidden border border-slate-50">
-                        <div className="bg-gradient-to-r from-[#117b6f] to-teal-400 h-full transition-all duration-1000" style={{ width: `${result.confidence}%` }}></div>
+                        <div className="bg-[#16c6a4] h-full transition-all duration-1000" style={{ width: `${result.confidence}%` }}></div>
                       </div>
                     </div>
                     <div className="bg-slate-50 rounded-2xl p-4 md:p-6 border border-slate-100 italic text-slate-600 text-sm leading-relaxed">
@@ -227,10 +227,10 @@ export default function Assessment({ session, onBack }) {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#f0fdfa] border-2 border-[#16c6a4] rounded-xl flex items-center justify-center text-xl">🤖</div>
               <div>
-                <h3 className="font-black text-slate-800 text-sm">Dr. AI Assistant</h3>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Online</p>
+                <h3 className="font-black text-[#0a2540] text-sm md:text-base">Dr. AI Assistant</h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="w-2 h-2 bg-[#6ee7b7] rounded-full animate-pulse"></span>
+                  <p className="text-[10px] md:text-xs font-bold text-[#6ee7b7] uppercase tracking-widest">Online</p>
                 </div>
               </div>
             </div>
