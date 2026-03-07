@@ -51,7 +51,11 @@ export default function Dashboard({ session, onStartAssessment }) {
     }
   };
 
-  // ... (previous format date function and return statement up to history map) ...
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f9fa] flex justify-center pb-20 animate-in fade-in duration-300">
       <div className="w-full max-w-4xl px-4 md:px-8 mt-6">
