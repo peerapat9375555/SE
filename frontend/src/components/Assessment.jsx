@@ -16,6 +16,7 @@ export default function Assessment({ session, onBack }) {
 
   // สถานะสำหรับระบบแชตบอท
   const [showChat, setShowChat] = useState(false); // ควบคุมการเปิด/ปิดแชตในมือถือ
+  const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState([
     { role: 'bot', text: "สวัสดีครับ ผมคือ Dr. AI Assistant ยินดีที่ได้ช่วยเหลือครับ คุณสามารถสอบถามข้อมูลเกี่ยวกับสุขภาพผิวหนังได้ที่นี่เลย" }
   ]);
