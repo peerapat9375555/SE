@@ -132,7 +132,8 @@ export default function Assessment({ session, onBack }) {
   return (
     <div className="min-h-screen bg-[#fbfaf6] flex flex-col font-sans text-slate-900 relative overflow-hidden">
       
-      <header className="h-[73px] flex-none px-4 md:px-8 bg-[#0c4a41] flex items-center justify-between z-20 shadow-md border-b-0">
+      <header className="h-[80px] flex-none px-4 md:px-8 bg-[#0c4a41] flex items-center justify-between z-20 shadow-md border-b-0 w-full relative">
+        {/* Left Side: Logo */}
         <div className="flex items-center gap-4">
           <button 
             onClick={() => window.history.back()}
@@ -142,18 +143,45 @@ export default function Assessment({ session, onBack }) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-orange-200 flex items-center justify-center text-lg">🔬</div>
-            <h1 className="text-lg md:text-xl font-bold text-white tracking-tight">AI Skin Assistant</h1>
-            <span className="bg-white/10 text-white/90 text-[10px] px-2 py-0.5 rounded-full border border-white/20">AI</span>
+            <div className="w-8 h-8 rounded-lg bg-orange-200 flex items-center justify-center text-lg shadow-sm">🔬</div>
+            <h1 className="text-lg md:text-xl font-bold text-white tracking-tight hidden sm:block">AI Skin Assistant</h1>
+            <span className="bg-white/10 text-white/90 text-[10px] px-2 py-0.5 rounded-full border border-white/20 hidden sm:block">AI</span>
           </div>
         </div>
-        <button 
-          onClick={() => setShowClinics(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#e6ab5b] text-[#0c4a41] rounded-full font-bold text-sm hover:bg-[#d6994a] transition-colors shadow-sm"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
-        </button>
+
+        {/* Right Side: Chatbot Profile & Clinic Button */}
+        <div className="flex items-center gap-4 md:gap-8 h-full">
+
+          {/* Chatbot Profile (Integrated into Header) */}
+          <div className="hidden md:flex items-center gap-3 pr-4 md:pr-8 border-r border-white/10 h-full py-2">
+            <div className="w-10 h-10 bg-transparent border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-xl shadow-[0_0_10px_rgba(22,198,164,0.3)] overflow-hidden">
+               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+               </svg>
+            </div>
+            <div className="flex flex-col justify-center">
+              <h3 className="font-bold text-white text-sm">Dr. AI Assistant</h3>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 bg-[#16c6a4] rounded-full shadow-[0_0_4px_#16c6a4]"></span>
+                <p className="text-[10px] text-white/70">ออนไลน์ - พร้อมวิเคราะห์ผิวหนัง</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Clinic Button */}
+          <button 
+            onClick={() => setShowClinics(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-[#e6ab5b] text-[#0c4a41] rounded-full font-bold text-sm hover:bg-[#d6994a] transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
+          </button>
+          
+          {/* Mobile Close Chat Button (Visible only on mobile when chat is open) */}
+          <button onClick={() => setShowChat(false)} className={`md:hidden text-white p-2 font-bold text-sm ${showChat ? 'block' : 'hidden'}`}>
+            ✕
+          </button>
+        </div>
       </header>
 
       <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-73px)] overflow-hidden">
@@ -256,28 +284,30 @@ export default function Assessment({ session, onBack }) {
         {/* --- ส่วนขวา: ระบบแชตบอท (Overlay ในมือถือ) --- */}
         <aside className={`
           fixed inset-0 z-40 bg-white flex flex-col shadow-2xl transition-transform duration-300 transform
-          md:relative md:translate-x-0 md:w-[400px] md:h-full md:z-10 md:border-l md:border-slate-200
+          md:relative md:translate-x-0 md:w-[450px] md:h-full md:z-10 md:border-l md:border-slate-200
           ${showChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
         `}>
-          <div className="flex-none p-4 md:p-6 bg-[#0c4a41] flex items-center justify-between z-10 shadow-md">
+          {/* Header แชตบอทในมือถือ (ใน Desktop จะไปรวมกับ Navbar หลักด้านบน) */}
+          <div className="flex-none p-4 bg-[#0c4a41] flex items-center justify-between z-10 shadow-md md:hidden">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#117b6f] border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-xl shadow-sm overflow-hidden">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-8 h-8 bg-transparent border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-base shadow-[0_0_10px_rgba(22,198,164,0.3)] overflow-hidden">
+                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
                 </svg>
               </div>
               <div>
-                <h3 className="font-bold text-white text-sm md:text-base">Dr. AI Assistant</h3>
+                <h3 className="font-bold text-white text-sm">Dr. AI Assistant</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-2 h-2 bg-[#16c6a4] rounded-full"></span>
-                  <p className="text-[10px] md:text-xs text-white/80">ออนไลน์ - พร้อมวิเคราะห์ผิวหนัง</p>
+                  <span className="w-1.5 h-1.5 bg-[#16c6a4] rounded-full shadow-[0_0_4px_#16c6a4]"></span>
+                  <p className="text-[10px] text-white/70">ออนไลน์</p>
                 </div>
               </div>
             </div>
-            <button onClick={() => setShowChat(false)} className="md:hidden text-teal-100 hover:text-white p-2 font-bold text-sm transition-colors">
-              ปิดแชต ✕
+            <button onClick={() => setShowChat(false)} className="text-white hover:text-teal-200 p-2 font-bold text-sm transition-colors">
+              ✕
             </button>
           </div>
+
 
           <div className="flex-1 overflow-y-auto p-4 md:pr-2 md:pl-6 md:py-6 space-y-4 md:space-y-6 bg-white">
             {messages.map((msg, idx) => (
