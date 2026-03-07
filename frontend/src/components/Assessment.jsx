@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { supabase } from '../supabaseClient';
 import NearbyClinics from './NearbyClinics';
 
@@ -25,6 +27,7 @@ export default function Assessment({ session, onBack }) {
   
   // สถานะสำหรับหน้าต่างค้นหาคลินิก
   const [showClinics, setShowClinics] = useState(false);
+  const [showFaq, setShowFaq] = useState(true);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -163,10 +166,8 @@ export default function Assessment({ session, onBack }) {
 
           {/* Chatbot Profile (Matching exactly with Chat Window width) */}
           <div className="hidden md:flex items-center gap-3 w-[450px] pl-6 h-full py-2">
-            <div className="w-10 h-10 bg-transparent border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-xl shadow-[0_0_10px_rgba(22,198,164,0.3)] overflow-hidden">
-               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
-               </svg>
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-[#16c6a4] overflow-hidden shrink-0">
+               <img src="/bot-icon.png" alt="Dr. AI Assistant" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col justify-center">
               <h3 className="font-bold text-white text-sm">Dr. AI Assistant</h3>
@@ -232,20 +233,7 @@ export default function Assessment({ session, onBack }) {
                   <span className="px-3 py-1.5 bg-white rounded-full border border-slate-200 shadow-sm"><span className="text-[#117b6f] mr-1">●</span> ฟรี 100%</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-white p-4 rounded-3xl text-center shadow-sm border border-slate-100 flex flex-col justify-center">
-                    <h4 className="text-2xl font-black text-[#0c4a41]">50K+</h4>
-                    <p className="text-xs text-slate-500 font-medium">การวินิจฉัย</p>
-                  </div>
-                  <div className="bg-white p-4 rounded-3xl text-center shadow-sm border border-slate-100 flex flex-col justify-center">
-                    <h4 className="text-2xl font-black text-[#0c4a41]">98%</h4>
-                    <p className="text-xs text-slate-500 font-medium">ความพึงพอใจ</p>
-                  </div>
-                  <div className="bg-white p-4 rounded-3xl text-center shadow-sm border border-slate-100 flex flex-col justify-center">
-                    <h4 className="text-2xl font-black text-[#0c4a41]">24/7</h4>
-                    <p className="text-xs text-slate-500 font-medium">พร้อมบริการ</p>
-                  </div>
-                </div>
+
 
                 <button 
                   onClick={handleAnalyze} 
@@ -298,10 +286,8 @@ export default function Assessment({ session, onBack }) {
           {/* Header แชตบอทในมือถือ (ใน Desktop จะไปรวมกับ Navbar หลักด้านบน) */}
           <div className="flex-none p-4 bg-[#0c4a41] flex items-center justify-between z-10 shadow-md md:hidden">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-transparent border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-base shadow-[0_0_10px_rgba(22,198,164,0.3)] overflow-hidden">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
-                </svg>
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border-2 border-[#16c6a4] overflow-hidden shrink-0">
+                <img src="/bot-icon.png" alt="Dr. AI Assistant" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="font-bold text-white text-sm">Dr. AI Assistant</h3>
@@ -321,21 +307,27 @@ export default function Assessment({ session, onBack }) {
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'bot' && (
-                  <div className="w-8 h-8 rounded-full bg-[#e0f2f1] flex items-center justify-center flex-shrink-0 mt-1">
-                     <svg className="w-4 h-4 text-[#117b6f]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-1 shadow-sm border border-slate-200 overflow-hidden">
+                     <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
                   </div>
                 )}
-                <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium shadow-sm' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium whitespace-pre-wrap shadow-sm'}`}>
-                  {msg.text}
+                <div className={`max-w-[85%] p-3 md:p-4 text-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-2xl rounded-tr-none font-medium shadow-sm' : 'bg-white border border-slate-100 rounded-2xl rounded-tl-none font-medium shadow-sm'}`}>
+                  {msg.role === 'bot' ? (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose prose-sm prose-teal max-w-none text-slate-700 prose-p:my-1 prose-ul:my-1 prose-li:my-0">
+                      {msg.text}
+                    </ReactMarkdown>
+                  ) : (
+                    msg.text
+                  )}
                 </div>
               </div>
             ))}
             
-            {/* โหลดดิ้งสถานะกำลังพิมพ์... */}
+             {/* โหลดดิ้งสถานะกำลังพิมพ์... */}
             {isChatLoading && (
               <div className="flex justify-start gap-3">
-                 <div className="w-8 h-8 rounded-full bg-[#e0f2f1] flex items-center justify-center flex-shrink-0 mt-1">
-                     <svg className="w-4 h-4 text-[#117b6f]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-1 shadow-sm border border-slate-200 overflow-hidden">
+                     <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
                   </div>
                 <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-4 shadow-sm flex gap-1.5 items-center">
                   <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
@@ -350,18 +342,25 @@ export default function Assessment({ session, onBack }) {
 
           <div className="flex-none bg-white z-10 px-4 md:px-6 pb-4 border-t border-slate-100">
              {/* FAQ Chips */}
-             <div className="py-4 space-y-2">
-                <p className="text-xs font-bold text-slate-500 mb-2">คำถามที่พบบ่อย</p>
-                <button onClick={() => setChatInput("สิวอักเสบกับสิวหัวดำต่างกันอย่างไร?")} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
-                  <span className="mr-2">🔍</span> สิวอักเสบกับสิวหัวดำต่างกันอย่างไร?
-                </button>
-                <button onClick={() => setChatInput("ผื่นแพ้สัมผัส ดูแลเบื้องต้นได้อย่างไร?")} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
-                  <span className="mr-2">🌿</span> ผื่นแพ้สัมผัส ดูแลเบื้องต้นได้อย่างไร?
-                </button>
-                <button onClick={() => setChatInput("แผลที่ผิวแบบไหนควรพบแพทย์ด่วน?")} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
-                  <span className="mr-2">⚠️</span> แผลที่ผิวแบบไหนควรพบแพทย์ด่วน?
-                </button>
-             </div>
+             {showFaq && (
+               <div className="py-4 space-y-2 relative">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-xs font-bold text-slate-500">คำถามที่พบบ่อย</p>
+                    <button onClick={() => setShowFaq(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-1" title="ซ่อนคำถามที่พบบ่อย">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                  </div>
+                  <button onClick={() => { setChatInput("สิวอักเสบกับสิวหัวดำต่างกันอย่างไร?"); setShowFaq(false); }} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
+                    <span className="mr-2">🔍</span> สิวอักเสบกับสิวหัวดำต่างกันอย่างไร?
+                  </button>
+                  <button onClick={() => { setChatInput("ผื่นแพ้สัมผัส ดูแลเบื้องต้นได้อย่างไร?"); setShowFaq(false); }} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
+                    <span className="mr-2">🌿</span> ผื่นแพ้สัมผัส ดูแลเบื้องต้นได้อย่างไร?
+                  </button>
+                  <button onClick={() => { setChatInput("แผลที่ผิวแบบไหนควรพบแพทย์ด่วน?"); setShowFaq(false); }} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
+                    <span className="mr-2">⚠️</span> แผลที่ผิวแบบไหนควรพบแพทย์ด่วน?
+                  </button>
+               </div>
+             )}
           
             <form onSubmit={handleSendMessage} className="relative flex items-center mt-2">
               <input 
