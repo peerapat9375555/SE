@@ -16,10 +16,10 @@ export default function Assessment({ session, onBack }) {
 
   // สถานะสำหรับระบบแชตบอท
   const [showChat, setShowChat] = useState(false); // ควบคุมการเปิด/ปิดแชตในมือถือ
-  const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState([
     { role: 'bot', text: "สวัสดีครับ ผมคือ Dr. AI Assistant ยินดีที่ได้ช่วยเหลือครับ คุณสามารถสอบถามข้อมูลเกี่ยวกับสุขภาพผิวหนังได้ที่นี่เลย" }
   ]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef(null);
   
   // สถานะสำหรับหน้าต่างค้นหาคลินิก
@@ -105,12 +105,13 @@ export default function Assessment({ session, onBack }) {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || isChatLoading) return;
 
     const userMsg = { role: 'user', text: chatInput };
     setMessages(prev => [...prev, userMsg]);
     const currentInput = chatInput;
     setChatInput("");
+    setIsChatLoading(true);
 
     try {
       const response = await fetch(`${CHATBOT_URL}/api/chat`, {
@@ -122,6 +123,8 @@ export default function Assessment({ session, onBack }) {
       setMessages(prev => [...prev, { role: 'bot', text: data.reply || data.response }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'bot', text: "ขออภัยครับ บริการแชตบอทขัดข้องชั่วคราว" }]);
+    } finally {
+      setIsChatLoading(false);
     }
   };
 
@@ -150,10 +153,10 @@ export default function Assessment({ session, onBack }) {
         </button>
       </header>
 
-      <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+      <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-73px)]">
         
         {/* --- ส่วนซ้าย: ระบบวิเคราะห์รูปภาพ (ซ่อนเมื่อเปิดแชตในมือถือ) --- */}
-        <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#f8fafc] ${showChat ? 'hidden md:block' : 'block'}`}>
+        <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#f8fafc] w-full ${showChat ? 'hidden md:block' : 'block'}`}>
           <div className="max-w-4xl mx-auto">
             {!showResult ? (
               <div className="space-y-6 animate-in fade-in duration-700">
@@ -238,11 +241,23 @@ export default function Assessment({ session, onBack }) {
           <div className="flex-1 min-h-0 p-4 md:p-6 overflow-y-auto space-y-4 md:space-y-6 bg-slate-50/30">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium'}`}>
+                <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium whitespace-pre-wrap'}`}>
                   {msg.text}
                 </div>
               </div>
             ))}
+            
+            {/* โหลดดิ้งสถานะกำลังพิมพ์... */}
+            {isChatLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-4 shadow-sm flex gap-1.5 items-center">
+                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+              </div>
+            )}
+            
             <div ref={chatEndRef} />
           </div>
 
