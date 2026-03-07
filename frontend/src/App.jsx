@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import NearbyClinics from './components/NearbyClinics';
 
 // --- API URLs ---
 // ตั้งค่าผ่าน environment variables (.env.production) สำหรับ deploy
@@ -21,6 +22,9 @@ export default function App() {
     { role: 'bot', text: "สวัสดีครับ ผมคือ Dr. AI Assistant ยินดีที่ได้ช่วยเหลือครับ คุณสามารถสอบถามข้อมูลเกี่ยวกับสุขภาพผิวหนังได้ที่นี่เลย" }
   ]);
   const chatEndRef = useRef(null);
+  
+  // สถานะสำหรับหน้าต่างค้นหาคลินิก
+  const [showClinics, setShowClinics] = useState(false);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -94,6 +98,13 @@ export default function App() {
           <div className="bg-[#117b6f] p-2 rounded-lg text-white font-bold">AI</div>
           <h1 className="text-lg md:text-xl font-black text-slate-800 tracking-tight uppercase">AI Skin Assistant</h1>
         </div>
+        <button 
+          onClick={() => setShowClinics(true)}
+          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-teal-50 text-[#117b6f] rounded-xl font-bold text-sm hover:bg-teal-100 transition-colors border border-teal-200"
+        >
+          <span className="text-lg">🏥</span>
+          <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
+        </button>
       </header>
 
       <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
@@ -219,6 +230,9 @@ export default function App() {
         )}
 
       </main>
+
+      {/* หน้าต่างค้นหาสถานพยาบาล */}
+      <NearbyClinics isOpen={showClinics} onClose={() => setShowClinics(false)} />
     </div>
   );
 }
