@@ -33,12 +33,25 @@ export default function Dashboard({ session, onStartAssessment }) {
     await supabase.auth.signOut();
   };
 
-  // Format date correctly
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const handleDeleteHistory = async (e, id) => {
+    e.stopPropagation();
+    try {
+      const { error } = await supabase
+        .from('assessment_history')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
+      
+      // Update local state to remove the deleted item
+      setHistory(prevHistory => prevHistory.filter(record => record.id !== id));
+    } catch (error) {
+      console.error('Error deleting history:', error.message);
+      alert('Failed to delete history item. Please try again.');
+    }
   };
 
+  // ... (previous format date function and return statement up to history map) ...
   return (
     <div className="min-h-screen bg-[#f8f9fa] flex justify-center pb-20 animate-in fade-in duration-300">
       <div className="w-full max-w-4xl px-4 md:px-8 mt-6">
@@ -108,7 +121,7 @@ export default function Dashboard({ session, onStartAssessment }) {
         ) : (
           <div className="space-y-4">
             {history.map((record) => (
-              <div key={record.id} className="bg-white border border-slate-100 shadow-sm hover:shadow-md rounded-2xl p-4 md:p-5 flex items-center gap-4 transition-all group cursor-pointer">
+              <div key={record.id} className="bg-white border border-slate-100 shadow-sm hover:shadow-md rounded-2xl p-4 md:p-5 flex items-center gap-4 transition-all group cursor-pointer relative">
                 {/* Thumbnail */}
                 <div className="w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
                   {record.image_url ? (
@@ -119,12 +132,12 @@ export default function Dashboard({ session, onStartAssessment }) {
                 </div>
                 
                 {/* Details */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 pr-8">
                   <h3 className="font-bold text-slate-800 text-sm md:text-base truncate">
                     {record.label || "Unknown Condition"} 
                     {record.confidence && <span className="font-normal text-slate-500 ml-1 text-xs">({(record.confidence * 100).toFixed(0)}%)</span>}
                   </h3>
-                  <p className="text-xs font-medium text-slate-500 mt-0.5 truncate">
+                  <p className="text-xs font-medium text-slate-500 mt-0.5 truncate pr-8">
                     {record.insight || "No insight available."}
                   </p>
                   <div className="flex gap-3 items-center mt-2 text-[10px] md:text-xs">
@@ -138,8 +151,18 @@ export default function Dashboard({ session, onStartAssessment }) {
                   </div>
                 </div>
                 
-                <div className="text-slate-300 group-hover:text-[#117b6f] group-hover:translate-x-1 transition-all">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                {/* Actions: View / Delete */}
+                <div className="flex items-center gap-2 ml-auto z-10 shrink-0 absolute right-4 md:right-5 top-1/2 -translate-y-1/2">
+                  <button 
+                    onClick={(e) => handleDeleteHistory(e, record.id)}
+                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                    title="Delete History"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                  <div className="text-slate-300 group-hover:text-[#117b6f] group-hover:translate-x-1 transition-all">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </div>
                 </div>
               </div>
             ))}
