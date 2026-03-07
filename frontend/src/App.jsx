@@ -14,21 +14,38 @@ export default function App() {
   useEffect(() => {
     // Check active sessions and sets the user
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+      if (session) {
+        setSession(session);
+      } else {
+        const adminSessionStr = localStorage.getItem('adminSession');
+        if (adminSessionStr) {
+          try {
+            setSession(JSON.parse(adminSessionStr));
+          } catch(e) {}
+        }
+      }
       setLoading(false);
     });
 
     // Listen for changes on auth state (log in, log out, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (!session) setCurrentView('dashboard'); // Reset view on logout
+      if (session) {
+        setSession(session);
+      } else {
+        const adminSessionStr = localStorage.getItem('adminSession');
+        if (!adminSessionStr) {
+          setCurrentView('dashboard'); // Reset view on logout
+          setSession(null);
+        }
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
-    if (session?.user?.email === 'admin@system.local') {
+    if (session?.user?.email === 'admin@system.local' || session?.user?.email === 'admin@admin.com') {
+      localStorage.removeItem('adminSession');
       setSession(null);
       setCurrentView('dashboard');
     } else {
@@ -49,6 +66,7 @@ export default function App() {
     return (
       <Auth 
         onAdminLogin={(fakeSession) => {
+          localStorage.setItem('adminSession', JSON.stringify(fakeSession));
           setSession(fakeSession);
           setLoading(false);
         }} 
