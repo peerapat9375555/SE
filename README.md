@@ -78,8 +78,8 @@
 ## 🔗 ภาพรวมการไหลของข้อมูล (Data Flow)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'edgeLabelBackground':'#e8e8e8', 'tertiaryColor': '#f4f4f4'}}}%%
-graph TD
+%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#1e1e1e', 'edgeLabelBackground':'#121212', 'lineColor': '#8b949e', 'textColor': '#c9d1d9'}}}%%
+graph LR
 
     %% ----------------------------------------------------
     %% User Layer
@@ -89,108 +89,99 @@ graph TD
     end
 
     %% ----------------------------------------------------
-    %% Frontend Layer
+    %% Frontend (Vercel)
     %% ----------------------------------------------------
-    subgraph Vercel ["⚡ Vercel (Frontend Service)"]
+    subgraph Vercel ["⚡ Frontend Layer (Vercel)"]
         UI["💻 React Vite App\n(dermaai.vercel.app)"]
-        UI_Img[/"📤 Upload Image"/]
-        UI_Chat[/"💬 Chat Query"/]
-
-        UI --- UI_Img
-        UI --- UI_Chat
     end
 
     %% ----------------------------------------------------
-    %% Backend Layer (Render)
+    %% Backend (Render)
     %% ----------------------------------------------------
-    subgraph Render ["☁️ Render (Backend Microservices)"]
+    subgraph Render ["☁️ Backend Layer (Render Microservices)"]
 
         %% Service 1: Model
-        subgraph ModelService ["🧠 Model Service (peerapat9375555/SE)"]
-            API1["API: /api/predict"]
-            ONNX("⚙️ ONNX Runtime\n(CPU Inference)")
-            API1 --> ONNX
+        subgraph ModelService ["🧠 Model Service"]
+            API_Predict["Predict API\n/api/predict"]
+            ONNX("⚙️ ONNX Runtime\nCPU Inference")
+            API_Predict --> ONNX
         end
 
         %% Service 2: Chatbot (RAG)
-        subgraph ChatbotService ["🤖 Chatbot Service (peerapat9375555/RAG_skin)"]
-            API2["API: /api/chat"]
+        subgraph ChatbotService ["🤖 Chatbot / RAG Service"]
+            API_Chat["Chat API\n/api/chat"]
 
-            subgraph RAGipeline ["⚡ RAG Pipeline"]
-                EmbedProcess["1️⃣ Embedding\n(Text ➡️ Vector)"]
-                SearchProcess["2️⃣ Vector Retrieval\n(Fetch Top-8)"]
-                RerankProcess["3️⃣ LLM Reranking\n(Select Top-4)"]
-                GenProcess["4️⃣ Generation\n(Context + Prompt)"]
+            EmbedProcess["1️⃣ Embed Query"]
+            SearchProcess["2️⃣ Vector Retrieval"]
+            RerankProcess["3️⃣ LLM Reranking"]
+            GenProcess["4️⃣ Generation"]
 
-                EmbedProcess --> SearchProcess
-                SearchProcess --> RerankProcess
-                RerankProcess --> GenProcess
-            end
-
-            API2 --> EmbedProcess
+            API_Chat --> EmbedProcess
+            EmbedProcess --> SearchProcess
+            SearchProcess --> RerankProcess
+            RerankProcess --> GenProcess
         end
     end
 
     %% ----------------------------------------------------
-    %% External APIs & Databases
+    %% External Services
     %% ----------------------------------------------------
     subgraph External ["🌐 External APIs & Storage"]
 
-        SupaDB[("🗄️ Supabase DB\n(pgvector)")]
+        SupaDB[("🗄️ Supabase\nVector DB")]
 
-        subgraph GoogleAPI ["🔹 Google AI Studio"]
-            GeminiEmbed(("Gemini\ntext-embedding-004"))
+        subgraph GoogleAPI ["🔹 Google AI"]
+            GeminiEmbed(("text-embedding-004"))
         end
 
-        subgraph KKUAPI ["🔹 KKU AI Gateway"]
-            KKURerank(("Gemini\ngemini-3.1-pro-preview\n(Key 2: Rerank)"))
-            KKUGen(("Gemini\ngemini-3.1-pro-preview\n(Key 1: LLM)"))
+        subgraph KKUAPI ["🔹 KKU Gateway"]
+            KKURerank(("Gemini (Key 2)\nfor Reranking"))
+            KKUGen(("Gemini (Key 1)\nfor Chat LLM"))
         end
     end
 
     %% ----------------------------------------------------
-    %% Data Flow Connections
+    %% Workflow Connections
     %% ----------------------------------------------------
 
-    %% User to Frontend
     User == "Uses" ==> UI
 
-    %% Frontend to Backends
-    UI_Img -- "POST Image\n(VITE_MODEL_URL)" --> API1
-    UI_Chat -- "POST Message\n(VITE_CHATBOT_URL)" --> API2
+    %% Front to Back
+    UI -- "Upload Image" --> API_Predict
+    UI -- "Chat Message" --> API_Chat
 
-    %% Model Return
-    ONNX -. "Return Risk %" .-> UI_Img
+    %% Model return
+    ONNX -. "Return Risk %" .-> UI
 
     %% RAG Pipeline Flow
-    EmbedProcess -- "Request Vector\n[EMBED_API_KEY]" --> GeminiEmbed
-    GeminiEmbed -. "Return 768-dim Vector" .-> SearchProcess
+    EmbedProcess -- "[EMBED_API_KEY]" --> GeminiEmbed
+    GeminiEmbed -. "768-dim Vector" .-> SearchProcess
 
-    SearchProcess -- "Cosine Similarity Search" --> SupaDB
-    SupaDB -. "Return 8 Candidate Docs" .-> RerankProcess
+    SearchProcess -- "Cosine Similarity" --> SupaDB
+    SupaDB -. "Top 8 Docs" .-> RerankProcess
 
-    RerankProcess -- "Send 8 Docs for Scoring\n[RERANK_API_KEY]" --> KKURerank
-    KKURerank -. "Return Selected Top 4 Docs" .-> GenProcess
+    RerankProcess -- "[RERANK_API_KEY]" --> KKURerank
+    KKURerank -. "Top 4 Docs" .-> GenProcess
 
-    GenProcess -- "Send System Prompt + Top 4 Docs\n[LLM_API_KEY]" --> KKUGen
-    KKUGen -. "Return Final Answer Text" .-> API2
+    GenProcess -- "[LLM_API_KEY]" --> KKUGen
+    KKUGen -. "Final Answer" .-> API_Chat
 
-    %% Final Return
-    API2 -. "Display Response" .-> UI_Chat
+    %% Final
+    API_Chat -. "Display Text" .-> UI
 
     %% ----------------------------------------------------
-    %% Styling
+    %% Styling (Dark Mode Optimized)
     %% ----------------------------------------------------
-    classDef frontend fill:#000000,stroke:#333,stroke-width:2px,color:#fff;
-    classDef model fill:#1b4f72,stroke:#2874a6,stroke-width:2px,color:#fff;
-    classDef chatbot fill:#145a32,stroke:#1d8348,stroke-width:2px,color:#fff;
-    classDef api fill:#b03a2e,stroke:#cb4335,stroke-width:2px,color:#fff;
-    classDef db fill:#b7950b,stroke:#d4ac0d,stroke-width:2px,color:#fff;
-    classDef process fill:#eaf2f8,stroke:#5dade2,stroke-width:1px,color:#333;
+    classDef frontend fill:#0d1117,stroke:#58a6ff,stroke-width:2px,color:#c9d1d9;
+    classDef model fill:#0d1117,stroke:#3fb950,stroke-width:2px,color:#c9d1d9;
+    classDef chatbot fill:#0d1117,stroke:#a371f7,stroke-width:2px,color:#c9d1d9;
+    classDef db fill:#0d1117,stroke:#d29922,stroke-width:2px,color:#c9d1d9;
+    classDef process fill:#21262d,stroke:#8b949e,stroke-width:1px,color:#c9d1d9,rx:5px,ry:5px;
+    classDef api fill:#0d1117,stroke:#f85149,stroke-width:2px,color:#c9d1d9;
 
     class UI frontend;
-    class API1,ONNX model;
-    class API2 chatbot;
+    class API_Predict,ONNX model;
+    class API_Chat chatbot;
     class EmbedProcess,SearchProcess,RerankProcess,GenProcess process;
     class GeminiEmbed,KKURerank,KKUGen api;
     class SupaDB db;
