@@ -132,22 +132,22 @@ export default function Assessment({ session, onBack }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 relative overflow-hidden">
       
-      <header className="bg-white shadow-sm py-4 px-6 md:px-8 border-b flex items-center justify-between sticky top-0 z-30">
+      <header className="h-[73px] flex-none px-4 md:px-8 bg-[#117b6f] flex items-center justify-between z-20 shadow-md">
         <div className="flex items-center gap-4">
           <button 
-            onClick={onBack}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+            onClick={() => window.history.back()}
+            className="w-10 h-10 rounded-xl border-2 border-[#16c6a4] flex items-center justify-center text-white hover:bg-[#16c6a4] transition-all shadow-sm"
             title="Back to Dashboard"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
           <div className="flex items-center gap-3">
-            <h1 className="text-lg md:text-xl font-black text-[#0a2540] tracking-tight uppercase hidden sm:block">AI Skin Assistant</h1>
+            <h1 className="text-lg md:text-xl font-black text-white tracking-tight uppercase hidden sm:block">AI Skin Assistant</h1>
           </div>
         </div>
         <button 
           onClick={() => setShowClinics(true)}
-          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-[#f0fdfa] text-[#117b6f] rounded-xl font-bold text-sm hover:bg-teal-100 transition-colors border-2 border-[#16c6a4]"
+          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-white text-[#117b6f] rounded-xl font-bold text-sm hover:bg-slate-100 transition-colors shadow-sm"
         >
           <span className="text-lg">🏥</span>
           <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
@@ -223,18 +223,18 @@ export default function Assessment({ session, onBack }) {
           md:relative md:translate-x-0 md:w-[400px] md:h-full md:z-10 md:border-l md:border-slate-200
           ${showChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
         `}>
-          <div className="flex-none p-4 md:p-6 border-b bg-white flex items-center justify-between z-10">
+          <div className="flex-none p-4 md:p-6 bg-[#117b6f] flex items-center justify-between z-10 shadow-md">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#f0fdfa] border-2 border-[#16c6a4] rounded-xl flex items-center justify-center text-xl">🤖</div>
+              <div className="w-10 h-10 bg-white border-2 border-[#16c6a4] rounded-xl flex items-center justify-center text-xl shadow-sm">🤖</div>
               <div>
-                <h3 className="font-black text-[#0a2540] text-sm md:text-base">Dr. AI Assistant</h3>
+                <h3 className="font-black text-white text-sm md:text-base">Dr. AI Assistant</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-2 h-2 bg-[#6ee7b7] rounded-full animate-pulse"></span>
-                  <p className="text-[10px] md:text-xs font-bold text-[#6ee7b7] uppercase tracking-widest">Online</p>
+                  <span className="w-2 h-2 bg-[#6ee7b7] rounded-full animate-pulse shadow-[0_0_5px_#6ee7b7]"></span>
+                  <p className="text-[10px] md:text-xs font-bold text-[#6ee7b7] uppercase tracking-widest drop-shadow-sm">Online</p>
                 </div>
               </div>
             </div>
-            <button onClick={() => setShowChat(false)} className="md:hidden text-slate-400 hover:text-slate-600 p-2 font-bold text-sm">
+            <button onClick={() => setShowChat(false)} className="md:hidden text-teal-100 hover:text-white p-2 font-bold text-sm transition-colors">
               ปิดแชต ✕
             </button>
           </div>
