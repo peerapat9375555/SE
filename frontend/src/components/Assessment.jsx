@@ -130,26 +130,28 @@ export default function Assessment({ session, onBack }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-[#fbfaf6] flex flex-col font-sans text-slate-900 relative overflow-hidden">
       
-      <header className="h-[73px] flex-none px-4 md:px-8 bg-[#117b6f] flex items-center justify-between z-20 shadow-md">
+      <header className="h-[73px] flex-none px-4 md:px-8 bg-[#0c4a41] flex items-center justify-between z-20 shadow-md border-b-0">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => window.history.back()}
-            className="w-10 h-10 rounded-xl border-2 border-[#16c6a4] flex items-center justify-center text-white hover:bg-[#16c6a4] transition-all shadow-sm"
+            className="w-10 h-10 rounded-xl border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all shadow-sm"
             title="Back to Dashboard"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
           <div className="flex items-center gap-3">
-            <h1 className="text-lg md:text-xl font-black text-white tracking-tight uppercase hidden sm:block">AI Skin Assistant</h1>
+            <div className="w-8 h-8 rounded-lg bg-orange-200 flex items-center justify-center text-lg">🔬</div>
+            <h1 className="text-lg md:text-xl font-bold text-white tracking-tight">AI Skin Assistant</h1>
+            <span className="bg-white/10 text-white/90 text-[10px] px-2 py-0.5 rounded-full border border-white/20">AI</span>
           </div>
         </div>
         <button 
           onClick={() => setShowClinics(true)}
-          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-white text-[#117b6f] rounded-xl font-bold text-sm hover:bg-slate-100 transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-[#e6ab5b] text-[#0c4a41] rounded-full font-bold text-sm hover:bg-[#d6994a] transition-colors shadow-sm"
         >
-          <span className="text-lg">🏥</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
         </button>
       </header>
@@ -157,31 +159,65 @@ export default function Assessment({ session, onBack }) {
       <main className="flex-1 flex flex-col md:flex-row relative h-[calc(100vh-73px)] overflow-hidden">
         
         {/* --- ส่วนซ้าย: ระบบวิเคราะห์รูปภาพ (ซ่อนเมื่อเปิดแชตในมือถือ) --- */}
-        <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#f8fafc] w-full h-full ${showChat ? 'hidden md:block' : 'block'}`}>
-          <div className="max-w-4xl mx-auto">
+        <section className={`flex-1 p-4 md:p-8 overflow-y-auto bg-[#fbfaf6] w-full h-full ${showChat ? 'hidden md:block' : 'block'}`}>
+          <div className="max-w-3xl mx-auto py-4 md:py-8">
             {!showResult ? (
-              <div className="space-y-6 animate-in fade-in duration-700">
-                <div className="bg-white border-2 border-dashed border-slate-300 rounded-3xl p-8 md:p-16 flex flex-col items-center justify-center transition-all hover:border-[#117b6f] hover:bg-teal-50/20 group">
+              <div className="space-y-8 animate-in fade-in duration-700">
+                <div className="text-center md:text-left space-y-4">
+                  <span className="inline-block bg-[#e0f2f1] text-[#0c4a41] text-xs font-bold px-3 py-1 rounded-full border border-[#b2dfdb]">
+                    <span className="mr-1">●</span> วิเคราะห์โรคผิวหนังด้วย AI
+                  </span>
+                  <h2 className="text-3xl md:text-5xl font-black text-[#117b6f] leading-tight">
+                    จำแนกโรคผิวหนัง<br/>ให้คำแนะนำเบื้องต้น
+                  </h2>
+                  <p className="text-slate-500 text-sm md:text-base max-w-xl">
+                    อัปโหลดภาพบริเวณผิวหนังที่ต้องการตรวจ AI จะวิเคราะห์ลักษณะ จำแนกโรค และให้คำแนะนำเบื้องต้นทันที
+                  </p>
+                </div>
+
+                <div className="bg-[#fbfaf6] border-2 border-dashed border-[#b2dfdb] rounded-[32px] p-8 md:p-12 flex flex-col items-center justify-center transition-all hover:bg-white group relative overflow-hidden">
                   {imagePreview ? (
-                    <img src={imagePreview} className="max-h-60 md:max-h-80 rounded-2xl shadow-xl mb-6 border-4 border-white" alt="ตัวอย่าง" />
+                    <img src={imagePreview} className="max-h-60 md:max-h-80 rounded-2xl shadow-xl z-10 border-4 border-white" alt="ตัวอย่าง" />
                   ) : (
-                    <div className="text-teal-600 mb-6 bg-teal-50 p-6 rounded-full group-hover:scale-110 transition-transform">
-                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    <div className="relative z-10 text-[#117b6f] mb-4 bg-[#e0f2f1] w-20 h-20 flex flex-col items-center justify-center rounded-[24px] group-hover:-translate-y-2 transition-transform shadow-sm">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     </div>
                   )}
-                  <h3 className="text-lg md:text-xl font-bold text-slate-700 mb-1 text-center">อัปโหลดรูปภาพบริเวณผิวหนัง</h3>
-                  <p className="text-slate-400 text-xs mb-6 text-center">รองรับไฟล์รูปแบบ JPG, PNG</p>
                   <input type="file" className="hidden" id="file-upload" onChange={handleFileUpload} />
-                  <label htmlFor="file-upload" className="px-6 md:px-8 py-3 bg-white border border-slate-200 rounded-full cursor-pointer hover:shadow-md transition-all font-bold text-slate-600 text-sm">
-                    {file ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพจากเครื่อง"}
-                  </label>
+                  {!imagePreview && (
+                     <label htmlFor="file-upload" className="absolute inset-0 w-full h-full cursor-pointer z-20 opacity-0"></label>
+                  )}
                 </div>
+
+                <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs font-bold text-[#0c4a41]">
+                  <span className="px-3 py-1.5 bg-white rounded-full border border-slate-200 shadow-sm"><span className="text-[#117b6f] mr-1">●</span> วิเคราะห์ภาพจริง</span>
+                  <span className="px-3 py-1.5 bg-white rounded-full border border-slate-200 shadow-sm"><span className="text-[#117b6f] mr-1">●</span> ผลใน 10 วินาที</span>
+                  <span className="px-3 py-1.5 bg-white rounded-full border border-slate-200 shadow-sm"><span className="text-[#117b6f] mr-1">●</span> ข้อมูลปลอดภัย</span>
+                  <span className="px-3 py-1.5 bg-white rounded-full border border-slate-200 shadow-sm"><span className="text-[#117b6f] mr-1">●</span> ฟรี 100%</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-white p-4 rounded-3xl text-center shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <h4 className="text-2xl font-black text-[#0c4a41]">50K+</h4>
+                    <p className="text-xs text-slate-500 font-medium">การวินิจฉัย</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-3xl text-center shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <h4 className="text-2xl font-black text-[#0c4a41]">98%</h4>
+                    <p className="text-xs text-slate-500 font-medium">ความพึงพอใจ</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-3xl text-center shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <h4 className="text-2xl font-black text-[#0c4a41]">24/7</h4>
+                    <p className="text-xs text-slate-500 font-medium">พร้อมบริการ</p>
+                  </div>
+                </div>
+
                 <button 
                   onClick={handleAnalyze} 
                   disabled={isAnalyzing || !file}
-                  className={`w-full py-4 md:py-5 rounded-2xl font-black text-white text-lg md:text-xl shadow-lg transition-all ${isAnalyzing || !file ? 'bg-slate-300' : 'bg-[#117b6f] hover:bg-[#0c5c53] shadow-teal-200 hover:-translate-y-1'}`}
+                  className={`w-full py-4 rounded-2xl font-bold text-lg md:text-xl shadow-md transition-all flex items-center justify-center gap-2 ${isAnalyzing || !file ? 'bg-[#cbd5e1] text-white cursor-not-allowed' : 'bg-[#e0f2f1] text-[#0c4a41] hover:bg-[#b2dfdb]'}`}
                 >
-                  {isAnalyzing ? "🔬 กำลังวิเคราะห์..." : "เริ่มการวินิจฉัย"}
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                  {isAnalyzing ? "กำลังวิเคราะห์..." : (file ? "เริ่มการวินิจฉัย" : "เริ่มการวินิจฉัย (กรุณาอัปโหลดรูป)")}
                 </button>
               </div>
             ) : (
@@ -223,14 +259,18 @@ export default function Assessment({ session, onBack }) {
           md:relative md:translate-x-0 md:w-[400px] md:h-full md:z-10 md:border-l md:border-slate-200
           ${showChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
         `}>
-          <div className="flex-none p-4 md:p-6 bg-[#117b6f] flex items-center justify-between z-10 shadow-md">
+          <div className="flex-none p-4 md:p-6 bg-[#0c4a41] flex items-center justify-between z-10 shadow-md">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white border-2 border-[#16c6a4] rounded-xl flex items-center justify-center text-xl shadow-sm">🤖</div>
+              <div className="w-10 h-10 bg-[#117b6f] border-2 border-[#16c6a4] rounded-full flex items-center justify-center text-xl shadow-sm overflow-hidden">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                </svg>
+              </div>
               <div>
-                <h3 className="font-black text-white text-sm md:text-base">Dr. AI Assistant</h3>
+                <h3 className="font-bold text-white text-sm md:text-base">Dr. AI Assistant</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-2 h-2 bg-[#6ee7b7] rounded-full animate-pulse shadow-[0_0_5px_#6ee7b7]"></span>
-                  <p className="text-[10px] md:text-xs font-bold text-[#6ee7b7] uppercase tracking-widest drop-shadow-sm">Online</p>
+                  <span className="w-2 h-2 bg-[#16c6a4] rounded-full"></span>
+                  <p className="text-[10px] md:text-xs text-white/80">ออนไลน์ - พร้อมวิเคราะห์ผิวหนัง</p>
                 </div>
               </div>
             </div>
@@ -239,10 +279,15 @@ export default function Assessment({ session, onBack }) {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 md:pr-2 md:pl-6 md:py-6 space-y-4 md:space-y-6 bg-slate-50/30">
+          <div className="flex-1 overflow-y-auto p-4 md:pr-2 md:pl-6 md:py-6 space-y-4 md:space-y-6 bg-white">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium whitespace-pre-wrap'}`}>
+              <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                {msg.role === 'bot' && (
+                  <div className="w-8 h-8 rounded-full bg-[#e0f2f1] flex items-center justify-center flex-shrink-0 mt-1">
+                     <svg className="w-4 h-4 text-[#117b6f]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                  </div>
+                )}
+                <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium shadow-sm' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium whitespace-pre-wrap shadow-sm'}`}>
                   {msg.text}
                 </div>
               </div>
@@ -250,7 +295,10 @@ export default function Assessment({ session, onBack }) {
             
             {/* โหลดดิ้งสถานะกำลังพิมพ์... */}
             {isChatLoading && (
-              <div className="flex justify-start">
+              <div className="flex justify-start gap-3">
+                 <div className="w-8 h-8 rounded-full bg-[#e0f2f1] flex items-center justify-center flex-shrink-0 mt-1">
+                     <svg className="w-4 h-4 text-[#117b6f]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                  </div>
                 <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-none p-4 shadow-sm flex gap-1.5 items-center">
                   <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
                   <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
@@ -262,20 +310,34 @@ export default function Assessment({ session, onBack }) {
             <div ref={chatEndRef} />
           </div>
 
-          <form onSubmit={handleSendMessage} className="flex-none p-4 md:p-6 border-t bg-white z-10">
-            <div className="relative flex items-center">
+          <div className="flex-none bg-white z-10 px-4 md:px-6 pb-4 border-t border-slate-100">
+             {/* FAQ Chips */}
+             <div className="py-4 space-y-2">
+                <p className="text-xs font-bold text-slate-500 mb-2">คำถามที่พบบ่อย</p>
+                <button onClick={() => setChatInput("สิวอักเสบกับสิวหัวดำต่างกันอย่างไร?")} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
+                  <span className="mr-2">🔍</span> สิวอักเสบกับสิวหัวดำต่างกันอย่างไร?
+                </button>
+                <button onClick={() => setChatInput("ผื่นแพ้สัมผัส ดูแลเบื้องต้นได้อย่างไร?")} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
+                  <span className="mr-2">🌿</span> ผื่นแพ้สัมผัส ดูแลเบื้องต้นได้อย่างไร?
+                </button>
+                <button onClick={() => setChatInput("แผลที่ผิวแบบไหนควรพบแพทย์ด่วน?")} className="w-full text-left bg-[#e0f2f1] hover:bg-[#b2dfdb] text-[#0c4a41] text-sm px-4 py-2.5 rounded-xl transition-colors truncate">
+                  <span className="mr-2">⚠️</span> แผลที่ผิวแบบไหนควรพบแพทย์ด่วน?
+                </button>
+             </div>
+          
+            <form onSubmit={handleSendMessage} className="relative flex items-center mt-2">
               <input 
                 type="text" 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="สอบถามข้อมูลสุขภาพผิว..." 
-                className="w-full bg-slate-100 border-none rounded-2xl py-3.5 px-5 pr-12 text-sm focus:ring-2 focus:ring-[#117b6f] transition-all" 
+                placeholder="ถามเกี่ยวกับโรคผิวหนัง..." 
+                className="w-full bg-[#f8fafc] border border-teal-100 rounded-full py-3.5 px-5 pr-14 text-sm focus:ring-2 focus:ring-[#117b6f] focus:bg-white transition-all outline-none" 
               />
-              <button type="submit" className="absolute right-2 bg-[#117b6f] text-white p-2 rounded-xl hover:bg-[#0c5c53] shadow-lg transition-transform active:scale-90">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+              <button type="submit" className="absolute right-1 text-white bg-[#117b6f] p-2.5 rounded-full hover:bg-[#0c4a41] transition-transform active:scale-95 shadow-md">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </aside>
 
         {/* --- 🔘 ปุ่มลอยสำหรับเปิดแชต (แสดงเฉพาะในมือถือ) --- */}
