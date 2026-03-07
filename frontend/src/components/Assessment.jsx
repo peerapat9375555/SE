@@ -95,7 +95,7 @@ export default function Assessment({ session, onBack }) {
         });
         
         setShowResult(true);
-        setMessages(prev => [...prev, { role: 'bot', text: `ผลวิเคราะห์ออกมาแล้วครับ: ${data.label} (ความแม่นยำ ${(data.confidence * 100).toFixed(2)}%) มีคำถามเพิ่มเติมไหมครับ?` }]);
+        setMessages(prev => [...prev, { role: 'bot', text: `ผลวิเคราะห์ออกมาแล้วครับ: ${data.label} (ความแม่นยำ ${Number(data.confidence).toFixed(2)}%) มีคำถามเพิ่มเติมไหมครับ?` }]);
       }
     } catch (error) {
       alert("ไม่สามารถติดต่อบริการวิเคราะห์โรคได้ กรุณาลองอีกครั้ง");
@@ -147,7 +147,7 @@ export default function Assessment({ session, onBack }) {
         </div>
         <button 
           onClick={() => setShowClinics(true)}
-          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-teal-50 text-[#117b6f] rounded-xl font-bold text-sm hover:bg-teal-100 transition-colors border border-teal-200"
+          className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-teal-50 text-teal-700 rounded-xl font-bold text-sm hover:bg-teal-100 transition-colors border border-teal-500"
         >
           <span className="text-lg">🏥</span>
           <span className="hidden sm:inline">คลินิกใกล้ฉัน</span>
@@ -225,7 +225,7 @@ export default function Assessment({ session, onBack }) {
         `}>
           <div className="p-4 md:p-6 border-b bg-white flex items-center justify-between sticky top-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center text-xl">🤖</div>
+              <div className="w-10 h-10 bg-teal-50 border-2 border-teal-500 rounded-xl flex items-center justify-center text-xl">🤖</div>
               <div>
                 <h3 className="font-black text-slate-800 text-sm">Dr. AI Assistant</h3>
                 <div className="flex items-center gap-1.5">
@@ -239,7 +239,7 @@ export default function Assessment({ session, onBack }) {
             </button>
           </div>
 
-          <div className="h-[calc(100vh-180px)] md:h-[calc(100vh-160px)] p-4 md:p-6 overflow-y-auto space-y-4 md:space-y-6 bg-slate-50/30">
+          <div className="h-[calc(100vh-180px)] md:h-[calc(100vh-160px)] p-4 md:pr-2 md:pl-6 md:py-6 overflow-y-auto space-y-4 md:space-y-6 bg-slate-50/30">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] p-3 md:p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-[#117b6f] text-white rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none font-medium whitespace-pre-wrap'}`}>
