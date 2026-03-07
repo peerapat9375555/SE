@@ -112,7 +112,8 @@ export default function Assessment({ session, onBack }) {
     if (!chatInput.trim() || isChatLoading) return;
 
     const userMsg = { role: 'user', text: chatInput };
-    setMessages(prev => [...prev, userMsg]);
+    // Add both the user message and an empty bot message we will continually update
+    setMessages(prev => [...prev, userMsg, { role: 'bot', text: "" }]);
     const currentInput = chatInput;
     setChatInput("");
     setIsChatLoading(true);
@@ -123,10 +124,30 @@ export default function Assessment({ session, onBack }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: currentInput }),
       });
-      const data = await response.json();
-      setMessages(prev => [...prev, { role: 'bot', text: data.reply || data.response }]);
+      
+      if (!response.ok) throw new Error("Server error");
+      
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setMessages(prev => {
+          const newArray = [...prev];
+          const lastIdx = newArray.length - 1;
+          newArray[lastIdx] = { ...newArray[lastIdx], text: newArray[lastIdx].text + chunk };
+          return newArray;
+        });
+      }
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'bot', text: "ขออภัยครับ บริการแชตบอทขัดข้องชั่วคราว" }]);
+      setMessages(prev => {
+        const newArray = [...prev];
+        const lastIdx = newArray.length - 1;
+        newArray[lastIdx] = { ...newArray[lastIdx], text: "ขออภัยครับ บริการแชตบอทขัดข้องชั่วคราว" };
+        return newArray;
+      });
     } finally {
       setIsChatLoading(false);
     }
