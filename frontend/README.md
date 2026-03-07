@@ -1,16 +1,60 @@
-# React + Vite
+# AI Skin Assistant (DermaAI) - Frontend & Backend Architecture
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the frontend implementation for the **AI Skin Assistant (DermaAI)** system, designed to provide fast, reliable, and intelligent preliminary dermatological advice.
 
-Currently, two official plugins are available:
+## 🚀 System Architecture: Multi-Stage RAG Pipeline
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The web application leverages a state-of-the-art **Multi-Stage Retrieval-Augmented Generation (RAG)** pipeline to balance real-time response speeds with high-accuracy clinical context.
 
-## React Compiler
+### The 4-Stage Chatbot Process:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Stage 1: Fast Query Router** 🗲
+   - Detects conversational queries (e.g., greetings like "สวัสดี", "test").
+   - Bypasses the database entirely to provide zero-latency responses for non-medical interactions.
+2. **Stage 2: Vector Retrieval & Hybrid Filter** 🔍
+   - Extracts semantic meaning using the **Google Gemini Embedding Model**.
+   - Retrieves the top 15-20 candidates from **Supabase (`pgvector`)**.
+   - Applies Lexical/Keyword boosting (Hybrid Search) to filter down to the 6 most relevant documents, securing highly specific terms (e.g. disease names, medications).
+3. **Stage 3: AI Reranking** 🧠
+   - Passes the 6 filtered documents to an optimized prompt in the LLM.
+   - The AI explicitly evaluates and reranks the context, selecting the absolute top 3 highest-quality sources to form the final knowledge context.
+4. **Stage 4: Streaming Generation (SSE)** 🌊
+   - The backend uses **Server-Sent Events (SSE)** via Flask's `stream_with_context`.
+   - The React frontend consumes the chunks using the `ReadableStream` API.
+   - Results are printed to the user's screen in real-time as they are being generated (Zero Perceived Latency).
 
-## Expanding the ESLint configuration
+## 💻 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** React + Vite + Vanilla CSS / Tailwind (for dynamic styling)
+- **Backend:** Python + Flask + Gunicorn (Hosted in the `RAG_skin` repo)
+- **Database:** Supabase (PostgreSQL with `pgvector` extension)
+- **AI Models:**
+  - Generative AI: Gemini 3.1 Pro Preview (via custom API gateway)
+  - Embedding: Gemini Embedding-001
+- **Deployment:** Vercel (Frontend) & Render (Backend)
+
+## 🛠️ Local Development (Frontend)
+
+1. **Install Dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+2. **Environment Variables:**
+   Make sure you connect to the correct backend host by setting up your `.env` or configuring the `CHATBOT_URL` inside `src/components/Assessment.jsx`.
+
+   ```javascript
+   const CHATBOT_URL = "http://localhost:5000"; // For local python backend testing
+   ```
+
+3. **Run Development Server:**
+   ```bash
+   npm run dev
+   ```
+
+## 🔐 Advanced Features Supported
+
+- **Real-time Streaming:** Smooth text reveal animation mimicking ChatGPT.
+- **Rich Text Rendering:** Support for Markdown outputs, ordered, and unordered lists out of the box.
+- **Image Analysis Prep:** The UI is structured to support future expansions into direct image uploads for image-to-text pathological analysis (Vision).
