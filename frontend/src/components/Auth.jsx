@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 
-export default function Auth() {
+export default function Auth({ onAdminLogin }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,6 +12,19 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     setMessage({ text: '', type: '' });
+
+    // Admin bypass logic
+    if (isLogin && email === 'admin' && password === 'admin') {
+        const fakeSession = {
+            user: {
+                id: 'admin-id-7bcb-4682', // Unique ID for admin
+                email: 'admin@system.local'
+            },
+            access_token: 'fake-token-bypass'
+        };
+        onAdminLogin(fakeSession);
+        return;
+    }
 
     try {
       if (isLogin) {
@@ -60,13 +73,13 @@ export default function Auth() {
           )}
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Email</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Email / Username</label>
             <input 
-              type="email" 
+              type="text" 
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
+              placeholder="admin หรือ email@example.com"
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#117b6f] focus:border-transparent transition-all"
             />
           </div>

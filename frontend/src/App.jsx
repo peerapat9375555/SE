@@ -35,7 +35,14 @@ export default function App() {
 
   // If there's no session, show the Auth screen
   if (!session) {
-    return <Auth />;
+    return (
+      <Auth 
+        onAdminLogin={(fakeSession) => {
+          setSession(fakeSession);
+          setLoading(false);
+        }} 
+      />
+    );
   }
 
   // Routing Logic
